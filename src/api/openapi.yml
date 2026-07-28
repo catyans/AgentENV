@@ -1919,6 +1919,29 @@ paths:
         "500":
           $ref: "#/components/responses/500"
 
+    delete:
+      summary: Delete a snapshot
+      description: Delete a sandbox-created snapshot by its ID or alias. Template snapshots must be deleted through the template API.
+      tags: [snapshots]
+      security:
+        - ApiKeyAuth: []
+        - AccessTokenAuth: []
+        - AuthProviderBearerAuth: []
+          AuthProviderTeamAuth: []
+        - AdminApiKeyAuth: []
+          AdminTeamAuth: []
+      parameters:
+        - $ref: "#/components/parameters/snapshotID"
+      responses:
+        "204":
+          description: The snapshot was deleted successfully
+        "401":
+          $ref: "#/components/responses/401"
+        "404":
+          $ref: "#/components/responses/404"
+        "500":
+          $ref: "#/components/responses/500"
+
   /v3/templates:
     post:
       summary: Create template (v3)

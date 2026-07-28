@@ -55,6 +55,11 @@ impl Client {
 
         Ok(snapshots)
     }
+
+    pub fn delete_snapshot(&self, id_or_alias: &str) -> Result<()> {
+        handle_status(self.delete(&format!("/snapshots/{}", id_or_alias)).call())?;
+        Ok(())
+    }
 }
 
 #[cfg(test)]

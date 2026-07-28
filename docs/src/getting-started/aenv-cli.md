@@ -213,4 +213,14 @@ aenv snapshot list --sandbox-id <sandbox-id>
 | `--sandbox-id <id>` | Filter snapshots by source sandbox ID |
 | `--output <format>` | Output format: `table` (default on TTY) or `json` |
 
-To delete a snapshot, use `aenv template delete <snapshot-id>` or `aenv template delete <name>` — snapshots share the same underlying store as templates and are deleted through the same command.
+### `aenv snapshot delete <snapshot-id-or-name>`
+
+Delete a sandbox-created snapshot by ID or name. Alias:
+`aenv snapshot rm`.
+
+```bash
+aenv snapshot delete <snapshot-id>
+aenv snapshot rm <name>
+```
+
+Template snapshots remain managed through `aenv template delete`.

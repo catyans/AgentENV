@@ -9,6 +9,7 @@ use tabled::Tabled;
   aenv snapshot create <sandbox-id> --name my-base
   aenv snapshot ls
   aenv snapshot ls --sandbox-id <sandbox-id>
+  aenv snapshot delete my-base
   aenv start my-base
 
 Snapshots are persistent and reusable. Use `aenv start <snapshot>` to create one or more new sandboxes from a snapshot.")]
@@ -35,6 +36,9 @@ enum Sub {
         #[arg(long, value_enum)]
         output: Option<Format>,
     },
+    /// Delete a sandbox-created snapshot by ID or name
+    #[command(alias = "rm")]
+    Delete { snapshot: String },
 }
 
 pub fn run(args: Args) -> Result<()> {
@@ -44,6 +48,7 @@ pub fn run(args: Args) -> Result<()> {
         Sub::List { sandbox_id, output } => {
             list(&client, sandbox_id.as_deref(), output::resolve(output))
         }
+        Sub::Delete { snapshot } => delete(&client, &snapshot),
     }
 }
 
@@ -71,4 +76,10 @@ fn list(client: &Client, sandbox_id: Option<&str>, format: Format) -> Result<()>
             snapshot.names.join(",")
         },
     })
+}
+
+fn delete(client: &Client, snapshot: &str) -> Result<()> {
+    client.delete_snapshot(snapshot)?;
+    println!("Deleted snapshot {}", snapshot);
+    Ok(())
 }

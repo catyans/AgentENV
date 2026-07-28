@@ -49,6 +49,37 @@ fn system_time_from_unix_ms(unix_ms: i64) -> SystemTime {
 impl Snapshots<()> for ApiImpl {
     type Claims = super::Claims;
 
+    async fn snapshots_snapshot_id_delete(
+        &self,
+        _method: &Method,
+        _host: &Host,
+        _cookies: &CookieJar,
+        _claims: &Self::Claims,
+        path_params: &models::SnapshotsSnapshotIdDeletePathParams,
+    ) -> Result<SnapshotsSnapshotIdDeleteResponse, ()> {
+        match self.snapshot_manager.get(&path_params.snapshot_id).await {
+            Ok(Some(record)) if matches!(record.source, SnapshotSource::Sandbox { .. }) => {
+                match self.snapshot_manager.delete(&path_params.snapshot_id).await {
+                    Ok(()) => Ok(
+                        SnapshotsSnapshotIdDeleteResponse::Status204_TheSnapshotWasDeletedSuccessfully,
+                    ),
+                    Err(err) => Ok(SnapshotsSnapshotIdDeleteResponse::Status500_ServerError(
+                        Self::snapshot_manager_error(&err),
+                    )),
+                }
+            }
+            Ok(_) => Ok(SnapshotsSnapshotIdDeleteResponse::Status404_NotFound(
+                Self::error(
+                    404,
+                    format!("snapshot '{}' not found", path_params.snapshot_id),
+                ),
+            )),
+            Err(err) => Ok(SnapshotsSnapshotIdDeleteResponse::Status500_ServerError(
+                Self::snapshot_manager_error(&err),
+            )),
+        }
+    }
+
     async fn snapshots_get(
         &self,
         _method: &Method,

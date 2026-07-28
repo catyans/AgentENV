@@ -50,12 +50,14 @@ aenv start <snapshot-id-or-name>
 
 ### Delete Snapshots
 
-Snapshots share the same catalog as templates. To delete a snapshot, use the
-template delete command with the snapshot ID or alias:
+Delete a sandbox-created snapshot with its snapshot ID or alias:
 
 ```bash
-aenv template delete <snapshot-id-or-name>
+aenv snapshot delete <snapshot-id-or-name>
+# alias: aenv snapshot rm <snapshot-id-or-name>
 ```
+
+Template snapshots remain managed through `aenv template delete`.
 
 ## Optional P2P Visibility
 
